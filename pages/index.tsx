@@ -2,16 +2,29 @@ import Head from "next/head";
 import { Layout } from "../components/Layout";
 
 import { Pokemon } from "../interfaces/pokemon";
-
-const calculatePower = (pokemon: Pokemon) =>
-  pokemon.hp +
-  pokemon.attack +
-  pokemon.defense +
-  pokemon.special_attack +
-  pokemon.special_defense +
-  pokemon.speed;
+import { useMemo, useState } from "react";
 
 const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
+  const [filters, setFilters] = useState({
+    name: "",
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const filteredPokemon = useMemo(() => {
+    return pokemons
+      .filter((pokemon) => 
+        pokemon.name.toLowerCase().includes(filters.name.toLocaleLowerCase())
+      )
+  }, [pokemons, filters.name])
+
   return (
     <>
       <Head>
@@ -23,20 +36,29 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
 
       <div>
         <div>Search</div>
-        <input type="text"></input>
+        <input
+          type="text"
+          placeholder="search by name"
+          name="name"
+          value={filters.name}
+          onChange={(e) => handleInputChange(e)}
+        />
         <div>Power threshold</div>
         <input type="text"></input>
         <div>Count over threshold: </div>
         <div>Min: </div>
         <div>Max: </div>
       </div>
+      {filteredPokemon.map((pokemon) => (
+        <div key={pokemon.id}>{pokemon.name}</div>
+      ))}
     </>
   );
 };
 
 HomePage.getLayout = Layout;
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   try {
     const pokemons = await fetch("http://localhost:3000/api/pokemons").then(
       (resp) => resp.json()

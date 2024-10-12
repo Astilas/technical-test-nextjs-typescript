@@ -20,12 +20,50 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
     }));
   };
 
+  // Filter pokemons by name and power
   const filteredPokemon = useMemo(() => {
-    return pokemons
-      .filter((pokemon) => 
-        pokemon.name.toLowerCase().includes(filters.name.toLocaleLowerCase())
-      )
-  }, [pokemons, filters.name])
+    return pokemons.filter((pokemon) => {
+      const nameMatch = pokemon.name
+        .toLowerCase()
+        .includes(filters.name.toLowerCase());
+      const powerMatch =
+        filters.power.trim() === "" || pokemon.power! > parseInt(filters.power);
+
+      if (filters.name && filters.power.trim() !== "") {
+        // If searching by name and power, return all pokemon that match the name
+        return nameMatch;
+      } else {
+        // Otherwise, we apply both filters
+        return nameMatch && powerMatch;
+      }
+    });
+  }, [pokemons, filters.name, filters.power]);
+
+  // Calculate count, min, max based on the power filter
+  const powerStats = useMemo(() => {
+    const powerValue =
+      filters.power.trim() === "" ? 0 : parseInt(filters.power);
+    if (isNaN(powerValue)) return { count: 0, min: null, max: null };
+
+    // Calculer les stats de power uniquement (pas de filtrage visuel)
+    const filteredByPower = filteredPokemon.filter(
+      (pokemon) => pokemon.power! > powerValue
+    );
+
+    if (filteredByPower.length === 0) {
+      return { count: 0, min: "none", max: "none" };
+    }
+
+    const powerValues: number[] = filteredByPower.map(
+      (pokemon) => pokemon.power!
+    );
+
+    return {
+      count: filteredByPower.length,
+      min: Math.min(...powerValues),
+      max: Math.max(...powerValues),
+    };
+  }, [filters.power, filteredPokemon]);
 
   return (
     <>
@@ -46,13 +84,22 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
           onChange={(e) => handleInputChange(e)}
         />
         <div>Power threshold</div>
-        <input type="text"></input>
-        <div>Count over threshold: </div>
-        <div>Min: </div>
-        <div>Max: </div>
+        <input
+          type="number"
+          placeholder="search by power greater than"
+          name="power"
+          min="0"
+          value={filters.power}
+          onChange={(e) => handleInputChange(e)}
+        />
+        <div>Count over threshold: {powerStats.count}</div>
+        <div>Min: {powerStats.min}</div>
+        <div>Max: {powerStats.max}</div>
       </div>
       {filteredPokemon.map((pokemon) => (
-        <div key={pokemon.id}>{pokemon.name} - Power: {pokemon.power}</div>
+        <div key={pokemon.id}>
+          {pokemon.name} - Power: {pokemon.power}
+        </div>
       ))}
     </>
   );

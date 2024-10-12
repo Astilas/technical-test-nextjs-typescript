@@ -5,6 +5,7 @@ import { Pokemon } from "../interfaces/pokemon";
 import { useMemo, useState } from "react";
 import { calculatePower } from "../utils/calculatePower";
 import Link from "next/link";
+import { TableContainer, Table, Tr, Th, Td, TypeBadge, TypeContainer } from "../styles/pokemons";
 
 const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
   const [filters, setFilters] = useState({
@@ -97,11 +98,55 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
         <div>Min: {powerStats.min}</div>
         <div>Max: {powerStats.max}</div>
       </div>
-      {filteredPokemon.map((pokemon) => (
-        <Link href={`/pokemon/${pokemon.id}`} key={pokemon.id}>
-          {pokemon.name} - Power: {pokemon.power}
-        </Link>
-      ))}
+      <TableContainer>
+        <Table>
+          <thead>
+            <tr>
+              <Th>ID</Th>
+              <Th>Nom</Th>
+              <Th>Type</Th>
+              <Th>HP</Th>
+              <Th>Attaque</Th>
+              <Th>Défense</Th>
+              <Th>Attaque Spéciale</Th>
+              <Th>Défense Spéciale</Th>
+              <Th>Vitesse</Th>
+              <Th>Puissance</Th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPokemon.map((pokemon: Pokemon) => (
+              <Link href={`/pokemon/${pokemon.id}` } key={pokemon.id}>
+                
+              <Tr>
+                <Td data-label="ID">{pokemon.id}</Td>
+                <Td data-label="Nom">
+                  
+                   {pokemon.name}
+                </Td>
+                <Td data-label="Type">
+                <TypeContainer>
+                  {pokemon.type.map((type) => (
+                    <TypeBadge key={type} pokemonType={type}>
+                      {type}
+                    </TypeBadge>
+                  ))}
+                </TypeContainer>
+                </Td>
+                <Td data-label="HP">{pokemon.hp}</Td>
+                <Td data-label="Attaque">{pokemon.attack}</Td>
+                <Td data-label="Défense">{pokemon.defense}</Td>
+                <Td data-label="Attaque Spéciale">{pokemon.special_attack}</Td>
+                <Td data-label="Défense Spéciale">{pokemon.special_defense}</Td>
+                <Td data-label="Vitesse">{pokemon.speed}</Td>
+                <Td data-label="Puissance">{pokemon.power}</Td>
+              </Tr>
+
+              </Link>
+            ))}
+          </tbody>
+        </Table>
+      </TableContainer>
     </>
   );
 };

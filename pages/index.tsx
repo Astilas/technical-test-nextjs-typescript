@@ -3,10 +3,12 @@ import { Layout } from "../components/Layout";
 
 import { Pokemon } from "../interfaces/pokemon";
 import { useMemo, useState } from "react";
+import { calculatePower } from "../utils/calculatePower";
 
 const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
   const [filters, setFilters] = useState({
     name: "",
+    power: "0",
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +52,7 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
         <div>Max: </div>
       </div>
       {filteredPokemon.map((pokemon) => (
-        <div key={pokemon.id}>{pokemon.name}</div>
+        <div key={pokemon.id}>{pokemon.name} - Power: {pokemon.power}</div>
       ))}
     </>
   );
@@ -63,8 +65,25 @@ export async function getStaticProps() {
     const pokemons = await fetch("http://localhost:3000/api/pokemons").then(
       (resp) => resp.json()
     );
-    return { props: { pokemons } };
+
+    if (pokemons.length === 0) {
+      throw new Error("No pokemon found");
+    }
+
+    // Add power to each pokemon
+    const pokemonsWithPower = pokemons.map((pokemon: any) => ({
+      ...pokemon,
+      power: calculatePower(pokemon),
+    }));
+
+    return {
+      props: {
+        pokemons: pokemonsWithPower,
+      },
+      revalidate: 3600,
+    };
   } catch (error) {
+    console.error("Erreur lors de la récupération des données Pokémon:", error);
     return {
       notFound: true,
     };

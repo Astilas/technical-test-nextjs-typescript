@@ -4,6 +4,7 @@ import { Layout } from "../components/Layout";
 import { Pokemon } from "../interfaces/pokemon";
 import { useMemo, useState } from "react";
 import { calculatePower } from "../utils/calculatePower";
+import Link from "next/link";
 
 const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
   const [filters, setFilters] = useState({
@@ -97,9 +98,9 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
         <div>Max: {powerStats.max}</div>
       </div>
       {filteredPokemon.map((pokemon) => (
-        <div key={pokemon.id}>
+        <Link href={`/pokemon/${pokemon.id}`} key={pokemon.id}>
           {pokemon.name} - Power: {pokemon.power}
-        </div>
+        </Link>
       ))}
     </>
   );

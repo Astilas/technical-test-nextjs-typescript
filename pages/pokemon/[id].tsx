@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Head from "next/head";
 
 import { Pokemon } from "../../interfaces/pokemon";
@@ -33,8 +33,6 @@ const PokemonPage = ({ pokemon }: { pokemon: Pokemon }) => {
     speed,
     power,
   } = pokemon;
-
-  const [imageLoading, setImageLoading] = useState<boolean>(true);
 
   const stats = [
     { name: "HP", value: hp },

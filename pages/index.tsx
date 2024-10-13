@@ -2,17 +2,31 @@ import Head from "next/head";
 import { Layout } from "../components/Layout";
 
 import { Pokemon } from "../interfaces/pokemon";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { calculatePower } from "../utils/calculatePower";
+import { filterPokemon } from "../utils/filterPokemon";
 import Link from "next/link";
-import { TableContainer, Table, Tr, Th, Td, TypeBadge, TypeContainer } from "../styles/pokemons";
+import {
+  TableContainer,
+  Table,
+  Tr,
+  Th,
+  Td,
+  TypeBadge,
+  TypeContainer,
+} from "../styles/pokemons";
+import { useRouter } from "next/router";
+import { GetServerSidePropsContext } from "next";
 
 const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
+  const router = useRouter();
+
   const [filters, setFilters] = useState({
-    name: "",
-    power: "0",
+    name: router.query.search ? String(router.query.search) : "",
+    power: router.query.power ? String(router.query.power) : "0",
   });
 
+  // Update filters
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -20,26 +34,38 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
       ...prev,
       [name]: value,
     }));
+
+    // Update URL
+    const query: { [key: string]: string } = {};
+    if (name === "name" && value) query.search = value;
+    if (name === "power" && value !== "" && value !== "0") query.power = value;
+    if (name !== "name" && filters.name) query.search = filters.name;
+    if (name !== "power" && filters.power !== "" && filters.power !== "0")
+      query.power = filters.power;
+
+    router.push(
+      {
+        pathname: "/",
+        query: Object.keys(query).length > 0 ? query : undefined,
+      },
+      undefined,
+      { shallow: true }
+    );
   };
 
   // Filter pokemons by name and power
   const filteredPokemon = useMemo(() => {
-    return pokemons.filter((pokemon) => {
-      const nameMatch = pokemon.name
-        .toLowerCase()
-        .includes(filters.name.toLowerCase());
-      const powerMatch =
-        filters.power.trim() === "" || pokemon.power! > parseInt(filters.power);
+    return filterPokemon(pokemons, filters.name, filters.power);
+  }, [pokemons, filters]);
 
-      if (filters.name && filters.power.trim() !== "") {
-        // If searching by name and power, return all pokemon that match the name
-        return nameMatch;
-      } else {
-        // Otherwise, we apply both filters
-        return nameMatch && powerMatch;
-      }
+  // Sync filters with URL params on navigation (e.g., back button)
+  useEffect(() => {
+    const { search = "", power = "0" } = router.query;
+    setFilters({
+      name: search as string,
+      power: power as string,
     });
-  }, [pokemons, filters.name, filters.power]);
+  }, [router.query]);
 
   // Calculate count, min, max based on the power filter
   const powerStats = useMemo(() => {
@@ -47,9 +73,8 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
       filters.power.trim() === "" ? 0 : parseInt(filters.power);
     if (isNaN(powerValue)) return { count: 0, min: null, max: null };
 
-    // Calculer les stats de power uniquement (pas de filtrage visuel)
     const filteredByPower = filteredPokemon.filter(
-      (pokemon) => pokemon.power! > powerValue
+      (pokemon: Pokemon) => pokemon.power! > powerValue
     );
 
     if (filteredByPower.length === 0) {
@@ -57,7 +82,7 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
     }
 
     const powerValues: number[] = filteredByPower.map(
-      (pokemon) => pokemon.power!
+      (pokemon: Pokemon) => pokemon.power!
     );
 
     return {
@@ -80,10 +105,10 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
         <div>Search</div>
         <input
           type="text"
-          placeholder="search by name"
+          placeholder="Search Pokemon by name"
           name="name"
           value={filters.name}
-          onChange={(e) => handleInputChange(e)}
+          onChange={handleInputChange}
         />
         <div>Power threshold</div>
         <input
@@ -92,7 +117,7 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
           name="power"
           min="0"
           value={filters.power}
-          onChange={(e) => handleInputChange(e)}
+          onChange={handleInputChange}
         />
         <div>Count over threshold: {powerStats.count}</div>
         <div>Min: {powerStats.min}</div>
@@ -116,32 +141,31 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
           </thead>
           <tbody>
             {filteredPokemon.map((pokemon: Pokemon) => (
-              <Link href={`/pokemon/${pokemon.id}` } key={pokemon.id}>
-                
-              <Tr>
-                <Td data-label="ID">{pokemon.id}</Td>
-                <Td data-label="Nom">
-                  
-                   {pokemon.name}
-                </Td>
-                <Td data-label="Type">
-                <TypeContainer>
-                  {pokemon.type.map((type) => (
-                    <TypeBadge key={type} pokemonType={type}>
-                      {type}
-                    </TypeBadge>
-                  ))}
-                </TypeContainer>
-                </Td>
-                <Td data-label="HP">{pokemon.hp}</Td>
-                <Td data-label="Attaque">{pokemon.attack}</Td>
-                <Td data-label="Défense">{pokemon.defense}</Td>
-                <Td data-label="Attaque Spéciale">{pokemon.special_attack}</Td>
-                <Td data-label="Défense Spéciale">{pokemon.special_defense}</Td>
-                <Td data-label="Vitesse">{pokemon.speed}</Td>
-                <Td data-label="Puissance">{pokemon.power}</Td>
-              </Tr>
-
+              <Link href={`/pokemon/${pokemon.id}`} key={pokemon.id}>
+                <Tr>
+                  <Td data-label="ID">{pokemon.id}</Td>
+                  <Td data-label="Nom">{pokemon.name}</Td>
+                  <Td data-label="Type">
+                    <TypeContainer>
+                      {pokemon.type.map((type) => (
+                        <TypeBadge key={type} pokemonType={type}>
+                          {type}
+                        </TypeBadge>
+                      ))}
+                    </TypeContainer>
+                  </Td>
+                  <Td data-label="HP">{pokemon.hp}</Td>
+                  <Td data-label="Attaque">{pokemon.attack}</Td>
+                  <Td data-label="Défense">{pokemon.defense}</Td>
+                  <Td data-label="Attaque Spéciale">
+                    {pokemon.special_attack}
+                  </Td>
+                  <Td data-label="Défense Spéciale">
+                    {pokemon.special_defense}
+                  </Td>
+                  <Td data-label="Vitesse">{pokemon.speed}</Td>
+                  <Td data-label="Puissance">{pokemon.power}</Td>
+                </Tr>
               </Link>
             ))}
           </tbody>
@@ -153,27 +177,35 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
 
 HomePage.getLayout = Layout;
 
-export async function getStaticProps() {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   try {
-    const pokemons = await fetch("http://localhost:3000/api/pokemons").then(
-      (resp) => resp.json()
-    );
+    const query = context.params || {};
+    const search = query.search || "";
+    const power = query.power || "0";
+    const res = await fetch("http://localhost:3000/api/pokemons");
+    const pokemons = await res.json();
 
     if (pokemons.length === 0) {
       throw new Error("No pokemon found");
     }
 
     // Add power to each pokemon
-    const pokemonsWithPower = pokemons.map((pokemon: any) => ({
+    const pokemonsWithPower = pokemons.map((pokemon: Pokemon) => ({
       ...pokemon,
       power: calculatePower(pokemon),
     }));
 
+    // Apply filters
+    const filteredPokemons = filterPokemon(
+      pokemonsWithPower,
+      search as string,
+      power as string
+    );
+
     return {
       props: {
-        pokemons: pokemonsWithPower,
+        pokemons: filteredPokemons,
       },
-      revalidate: 3600,
     };
   } catch (error) {
     console.error("Erreur lors de la récupération des données Pokémon:", error);

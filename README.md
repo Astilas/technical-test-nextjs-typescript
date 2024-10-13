@@ -58,15 +58,3 @@
 ```bash
 @user:~$ npm run test
 ```
-
-
-
-
-
-je n'ai pas réussi à implementer un loading state lors du chargement de l'image pour pokemon page via onLoadComplete(() => setLoading(false)) (la fonction a l'air de se lancée avant que l'image soit visible ce qui fait que le loading state est toujours false)
-
-Ni à implementer suspense c'est pourqioi j'ai remplacé la logique de suspense par le fait d'écouter les changements de route via le router events et retourner le composant de loading
-
-ensuite des version plus récente de nextjs j'aurai utiliser useSearchParam 
-
-j'aurai aussi pu ne pas mettre en dur l'id dans le ternaire et calculer le minid et maxId dans la req

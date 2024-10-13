@@ -92,7 +92,7 @@ export const FilterContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
   margin-bottom: 20px;
 
   @media (max-width: 768px) {

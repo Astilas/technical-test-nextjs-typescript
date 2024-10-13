@@ -99,7 +99,7 @@ export const Label = styled.div`
 `;
 
 export const Input = styled.input`
-  padding: 5px;
+  padding: 10px 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
 `;

@@ -8,7 +8,7 @@ export default async function handler(
 ) {
   const { id } = req.query;
 
-  const pokemon = Pokemons.find(p => p.id === Number(id));
+  const pokemon: Pokemon | undefined = Pokemons.find((p) => p.id === Number(id));
 
   if (pokemon) {
     res.status(200).json(pokemon);

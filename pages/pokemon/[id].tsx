@@ -7,6 +7,7 @@ import { calculatePower } from "../../utils/calculatePower";
 import Image from "next/image";
 import Link from "next/link";
 import { Table, Container, StatBarContainer, StatBar } from "../../styles/pokemonDetails";
+import { TypeContainer, TypeBadge } from "../../styles/pokemons";
 
 
 const maxStatValue = 200;
@@ -15,6 +16,7 @@ const maxPowerValue = 900;
 const PokemonPage = ({ pokemon }: { pokemon: Pokemon }) => {
   const {
     name,
+    type,
     id,
     hp,
     attack,
@@ -40,7 +42,15 @@ const PokemonPage = ({ pokemon }: { pokemon: Pokemon }) => {
       <Head>
         <title>{name}</title>
       </Head>
-      <h1>{name}</h1>
+      <h1>{name}
+      <TypeContainer>
+          {type.map((t) => (
+            <TypeBadge key={t} pokemonType={t}>
+              {t}
+            </TypeBadge>
+          ))}
+        </TypeContainer>
+      </h1>
       <Container>
       <Image
         src={`/images/${name}.jpg`}
@@ -102,7 +112,7 @@ export const getServerSideProps = async ({
     const response = await fetch(`http://localhost:3000/api/pokemon/${id}`);
     const pokemon: Pokemon = await response.json();
 
-    if (!pokemon) {
+    if (response.status !== 200 || !pokemon) {
       return {
         notFound: true, // If not found, return 404
       };

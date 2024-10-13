@@ -16,7 +16,6 @@ import {
   ImageContainer,
 } from "../../styles/pokemonDetails";
 import { TypeContainer, TypeBadge } from "../../styles/pokemons";
-import styled from "styled-components";
 
 const maxStatValue = 200;
 const maxPowerValue = 900;

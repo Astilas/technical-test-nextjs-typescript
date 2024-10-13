@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 
 import { Pokemon } from "../../interfaces/pokemon";
@@ -13,8 +13,10 @@ import {
   ButtonContainer,
   StyledButton,
   TitlePokemon,
+  ImageContainer,
 } from "../../styles/pokemonDetails";
 import { TypeContainer, TypeBadge } from "../../styles/pokemons";
+import styled from "styled-components";
 
 const maxStatValue = 200;
 const maxPowerValue = 900;
@@ -33,6 +35,8 @@ const PokemonPage = ({ pokemon }: { pokemon: Pokemon }) => {
     power,
   } = pokemon;
 
+  const [imageLoading, setImageLoading] = useState<boolean>(true);
+
   const stats = [
     { name: "HP", value: hp },
     { name: "Attack", value: attack },
@@ -49,10 +53,8 @@ const PokemonPage = ({ pokemon }: { pokemon: Pokemon }) => {
         <title>{name}</title>
       </Head>
       <TitlePokemon>
-      <h1>
-        {name}
-      </h1>
-      <TypeContainer>
+        <h1>{name}</h1>
+        <TypeContainer>
           {type.map((t) => (
             <TypeBadge key={t} pokemonType={t}>
               {t}
@@ -60,55 +62,50 @@ const PokemonPage = ({ pokemon }: { pokemon: Pokemon }) => {
           ))}
         </TypeContainer>
       </TitlePokemon>
-      <div style={{ margin: '30px'}}>
-        <Image
-          src={`/images/${name}.jpg`}
-          alt={name}
-          width={300}
-          height={300}
-          loading="lazy"
-        />
-        </div>
-        <Table>
-          <tbody>
-            {stats.map((stat, index) => (
-              <tr key={index}>
-                <td data-label={stat.name}>{stat.name}</td>
-                <td>
-                  <StatBarContainer>
-                    <StatBar
-                      width={
-                        stat.name === "Power"
-                          ? (stat.value! / maxPowerValue) * 100
-                          : (stat.value! / maxStatValue) * 100
-                      }
-                    />
-                  </StatBarContainer>
-                </td>
-                <td>{stat.value}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-  
+      <ImageContainer>
+          <Image
+            src={`/images/${name}.jpg`}
+            alt={name}
+            width={300}
+            height={300}
+            priority={true}
+            />
+      
+      </ImageContainer>
+      <Table>
+        <tbody>
+          {stats.map((stat, index) => (
+            <tr key={index}>
+              <td data-label={stat.name}>{stat.name}</td>
+              <td>
+                <StatBarContainer>
+                  <StatBar
+                    width={
+                      stat.name === "Power"
+                        ? (stat.value! / maxPowerValue) * 100
+                        : (stat.value! / maxStatValue) * 100
+                    }
+                  />
+                </StatBarContainer>
+              </td>
+              <td>{stat.value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+
       <ButtonContainer>
         {id > 1 && (
           <Link href={`/pokemon/${id - 1}`}>
-          <StyledButton disabled={id <= 1}>
-            Previous
-          </StyledButton>
+            <StyledButton disabled={id <= 1}>Previous</StyledButton>
           </Link>
         )}
         <Link href={`/`}>
-        <StyledButton>
-          Home
-        </StyledButton>
+          <StyledButton>Home</StyledButton>
         </Link>
         {id < 809 && (
-            <Link href={`/pokemon/${id + 1}`}>
-            <StyledButton disabled={id >= 809}>
-              Next
-            </StyledButton>
+          <Link href={`/pokemon/${id + 1}`}>
+            <StyledButton disabled={id >= 809}>Next</StyledButton>
           </Link>
         )}
       </ButtonContainer>

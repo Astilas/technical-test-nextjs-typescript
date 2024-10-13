@@ -16,7 +16,7 @@ import {
   FilterContainer,
   Label,
   Input,
-  StatsContainer
+  StatsContainer,
 } from "../styles/pokemons";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next";
@@ -105,7 +105,7 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
       <h1>Pokemon list</h1>
 
       <FilterContainer>
-      <Label>Search:</Label>
+        <Label>Search:</Label>
         <Input
           type="text"
           placeholder="Search Pokemon by name"
@@ -145,32 +145,42 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredPokemon.map((pokemon: Pokemon) => (
-              <Tr
-                key={pokemon.id}
-                onClick={() => router.push(`/pokemon/${pokemon.id}`)}
-                style={{ cursor: "pointer" }}
-              >
-                <Td data-label="ID">{pokemon.id}</Td>
-                <Td data-label="Nom">{pokemon.name}</Td>
-                <Td data-label="Type">
-                  <TypeContainer>
-                    {pokemon.type.map((type: string) => (
-                      <TypeBadge key={type} pokemonType={type}>
-                        {type}
-                      </TypeBadge>
-                    ))}
-                  </TypeContainer>
-                </Td>
-                <Td data-label="HP">{pokemon.hp}</Td>
-                <Td data-label="Attaque">{pokemon.attack}</Td>
-                <Td data-label="Défense">{pokemon.defense}</Td>
-                <Td data-label="Attaque Spéciale">{pokemon.special_attack}</Td>
-                <Td data-label="Défense Spéciale">{pokemon.special_defense}</Td>
-                <Td data-label="Vitesse">{pokemon.speed}</Td>
-                <Td data-label="Puissance">{pokemon.power}</Td>
-              </Tr>
-            ))}
+            {filteredPokemon.length > 0 ? (
+              filteredPokemon.map((pokemon: Pokemon) => (
+                <Tr
+                  key={pokemon.id}
+                  onClick={() => router.push(`/pokemon/${pokemon.id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <Td data-label="ID">{pokemon.id}</Td>
+                  <Td data-label="Nom">{pokemon.name}</Td>
+                  <Td data-label="Type">
+                    <TypeContainer>
+                      {pokemon.type.map((type: string) => (
+                        <TypeBadge key={type} pokemonType={type}>
+                          {type}
+                        </TypeBadge>
+                      ))}
+                    </TypeContainer>
+                  </Td>
+                  <Td data-label="HP">{pokemon.hp}</Td>
+                  <Td data-label="Attaque">{pokemon.attack}</Td>
+                  <Td data-label="Défense">{pokemon.defense}</Td>
+                  <Td data-label="Attaque Spéciale">
+                    {pokemon.special_attack}
+                  </Td>
+                  <Td data-label="Défense Spéciale">
+                    {pokemon.special_defense}
+                  </Td>
+                  <Td data-label="Vitesse">{pokemon.speed}</Td>
+                  <Td data-label="Puissance">{pokemon.power}</Td>
+                </Tr>
+              ))
+            ) : (
+              <tr>
+                <Td colSpan={10}>No Pokemon found</Td>
+              </tr>
+            )}
           </tbody>
         </Table>
       </TableContainer>

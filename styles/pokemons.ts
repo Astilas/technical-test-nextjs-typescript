@@ -65,6 +65,7 @@ export const Th = styled.th`
 `;
 
 export const Td = styled.td`
+  text-align:center;
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 5px;

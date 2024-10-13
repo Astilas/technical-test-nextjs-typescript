@@ -5,7 +5,6 @@ import { Pokemon } from "../interfaces/pokemon";
 import { useEffect, useMemo, useState } from "react";
 import { calculatePower } from "../utils/calculatePower";
 import { filterPokemon } from "../utils/filterPokemon";
-import Link from "next/link";
 import {
   TableContainer,
   Table,
@@ -141,32 +140,30 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
           </thead>
           <tbody>
             {filteredPokemon.map((pokemon: Pokemon) => (
-              <Link href={`/pokemon/${pokemon.id}`} key={pokemon.id}>
-                <Tr>
-                  <Td data-label="ID">{pokemon.id}</Td>
-                  <Td data-label="Nom">{pokemon.name}</Td>
-                  <Td data-label="Type">
-                    <TypeContainer>
-                      {pokemon.type.map((type) => (
-                        <TypeBadge key={type} pokemonType={type}>
-                          {type}
-                        </TypeBadge>
-                      ))}
-                    </TypeContainer>
-                  </Td>
-                  <Td data-label="HP">{pokemon.hp}</Td>
-                  <Td data-label="Attaque">{pokemon.attack}</Td>
-                  <Td data-label="Défense">{pokemon.defense}</Td>
-                  <Td data-label="Attaque Spéciale">
-                    {pokemon.special_attack}
-                  </Td>
-                  <Td data-label="Défense Spéciale">
-                    {pokemon.special_defense}
-                  </Td>
-                  <Td data-label="Vitesse">{pokemon.speed}</Td>
-                  <Td data-label="Puissance">{pokemon.power}</Td>
-                </Tr>
-              </Link>
+              <Tr
+                key={pokemon.id}
+                onClick={() => router.push(`/pokemon/${pokemon.id}`)}
+                style={{ cursor: "pointer" }}
+              >
+                <Td data-label="ID">{pokemon.id}</Td>
+                <Td data-label="Nom">{pokemon.name}</Td>
+                <Td data-label="Type">
+                  <TypeContainer>
+                    {pokemon.type.map((type: string) => (
+                      <TypeBadge key={type} pokemonType={type}>
+                        {type}
+                      </TypeBadge>
+                    ))}
+                  </TypeContainer>
+                </Td>
+                <Td data-label="HP">{pokemon.hp}</Td>
+                <Td data-label="Attaque">{pokemon.attack}</Td>
+                <Td data-label="Défense">{pokemon.defense}</Td>
+                <Td data-label="Attaque Spéciale">{pokemon.special_attack}</Td>
+                <Td data-label="Défense Spéciale">{pokemon.special_defense}</Td>
+                <Td data-label="Vitesse">{pokemon.speed}</Td>
+                <Td data-label="Puissance">{pokemon.power}</Td>
+              </Tr>
             ))}
           </tbody>
         </Table>

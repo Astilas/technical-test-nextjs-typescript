@@ -95,14 +95,13 @@ export const getServerSideProps = async ({
 }: {
   params: { id: number };
 }) => {
-  const { id } = params; // Get the ID from the parameter
+  const { id } = params;
 
   try {
     // Call the API to get the list of Pokémon
-    const response = await fetch(`http://localhost:3000/api/pokemon/${id}`); // Ensure the URL is correct
+    const response = await fetch(`http://localhost:3000/api/pokemon/${id}`);
     const pokemon: Pokemon = await response.json();
 
-    // Check if the pokemon has been found
     if (!pokemon) {
       return {
         notFound: true, // If not found, return 404

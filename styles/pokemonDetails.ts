@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const Table = styled.table`
-  width: 100vh;
   border-collapse: separate;
   border-spacing: 10px 10px;
 
@@ -15,10 +14,11 @@ export const Table = styled.table`
   }
 
   td:nth-child(3) {
-    width: 30%; // Column value
+    width: 10%; // Column value
   }
 
   @media (max-width: 768px) {
+    width: 100%;
     display: block;
     
     thead {
@@ -85,3 +85,35 @@ export const StatBarContainer = styled.div`
   width: 100%;
   border-radius: 2px;
 `;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+`;
+
+export const StyledButton = styled.button`
+  background-color: #30a7d7;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #1e8cbf;
+  }
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+`;
+
+export const TitlePokemon = styled.div`
+    display: contents;
+`

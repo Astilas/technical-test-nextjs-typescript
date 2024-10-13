@@ -6,9 +6,15 @@ import { Layout } from "../../components/Layout";
 import { calculatePower } from "../../utils/calculatePower";
 import Image from "next/image";
 import Link from "next/link";
-import { Table, Container, StatBarContainer, StatBar } from "../../styles/pokemonDetails";
+import {
+  Table,
+  StatBarContainer,
+  StatBar,
+  ButtonContainer,
+  StyledButton,
+  TitlePokemon,
+} from "../../styles/pokemonDetails";
 import { TypeContainer, TypeBadge } from "../../styles/pokemons";
-
 
 const maxStatValue = 200;
 const maxPowerValue = 900;
@@ -42,7 +48,10 @@ const PokemonPage = ({ pokemon }: { pokemon: Pokemon }) => {
       <Head>
         <title>{name}</title>
       </Head>
-      <h1>{name}
+      <TitlePokemon>
+      <h1>
+        {name}
+      </h1>
       <TypeContainer>
           {type.map((t) => (
             <TypeBadge key={t} pokemonType={t}>
@@ -50,16 +59,17 @@ const PokemonPage = ({ pokemon }: { pokemon: Pokemon }) => {
             </TypeBadge>
           ))}
         </TypeContainer>
-      </h1>
-      <Container>
-      <Image
-        src={`/images/${name}.jpg`}
-        alt={name}
-        width={300}
-        height={300}
-        loading="lazy"
-      />
-      <Table>
+      </TitlePokemon>
+      <div style={{ margin: '30px'}}>
+        <Image
+          src={`/images/${name}.jpg`}
+          alt={name}
+          width={300}
+          height={300}
+          loading="lazy"
+        />
+        </div>
+        <Table>
           <tbody>
             {stats.map((stat, index) => (
               <tr key={index}>
@@ -80,20 +90,28 @@ const PokemonPage = ({ pokemon }: { pokemon: Pokemon }) => {
             ))}
           </tbody>
         </Table>
-      </Container>
-      {id > 1 && (
-        <button>
-          <Link href={`/pokemon/${id - 1}`}>Previous</Link>
-        </button>
-      )}
-      {id < 809 && (
-        <button>
-          <Link href={`/pokemon/${id + 1}`}>Next</Link>
-        </button>
-      )}
-      <button>
-        <Link href={`/`}>Home</Link>
-      </button>
+  
+      <ButtonContainer>
+        {id > 1 && (
+          <Link href={`/pokemon/${id - 1}`}>
+          <StyledButton disabled={id <= 1}>
+            Previous
+          </StyledButton>
+          </Link>
+        )}
+        <Link href={`/`}>
+        <StyledButton>
+          Home
+        </StyledButton>
+        </Link>
+        {id < 809 && (
+            <Link href={`/pokemon/${id + 1}`}>
+            <StyledButton disabled={id >= 809}>
+              Next
+            </StyledButton>
+          </Link>
+        )}
+      </ButtonContainer>
     </>
   );
 };

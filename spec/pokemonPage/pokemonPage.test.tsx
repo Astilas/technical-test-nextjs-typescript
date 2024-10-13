@@ -16,6 +16,13 @@ jest.mock("next/link", () => {
   );
 });
 
+jest.mock('next/image', () => ({
+  __esModule: true,
+  default: (props: any) => {
+    return <img {...props} data-testid="pokemon-image" />;
+  },
+}));
+
 describe("PokemonDetail Component", () => {
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue({
@@ -29,6 +36,10 @@ describe("PokemonDetail Component", () => {
 
   it("should render the Pokemon details correctly", () => {
     render(<PokemonPage pokemon={mockPokemons[1]} />);
+  
+    const pokemonImage = screen.getByTestId('pokemon-image');
+    expect(pokemonImage).toHaveAttribute('alt', `${mockPokemons[1].name}`)
+    expect(pokemonImage).toHaveAttribute('src', `/images/${mockPokemons[1].name}.jpg`);
 
     expect(screen.getByText("Charmander")).toBeInTheDocument();
     expect(screen.getByText("Fire")).toBeInTheDocument();
@@ -66,4 +77,5 @@ describe("PokemonDetail Component", () => {
       `/pokemon/${expectedNextId}`
     );
   });
+
 });

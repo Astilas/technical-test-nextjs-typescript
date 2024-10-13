@@ -20,40 +20,26 @@
   </a>
 </p>
 
-## Introduce
+# Problèmes rencontrés et limitations
 
-It's a pokemon list.
+1. **État de chargement lors de l'affichage des images**
+   - J'ai tenté d'implémenter un état de chargement (`loading state`) pour l'image de la page Pokémon via la méthode `onLoadComplete(() => setLoading(false))`. Cependant, la fonction semble se déclencher avant que l'image ne soit complètement visible, ce qui fait que l'état de chargement est toujours défini sur `false` trop tôt. Cela entraîne l'absence de gestion adéquate du `spinner` lors du chargement de l'image.
 
-#### Pokemon List
+2. **Suspense pour le chargement**
+   - J'ai également essayé d'utiliser `Suspense` pour gérer le chargement des composants, mais je n'ai pas pu le mettre en œuvre correctement. À la place, j'ai choisi d'écouter les événements de changement de route via `Router.events` de Next.js, et d'afficher un composant de chargement personnalisé pendant la transition de pokemon pages.
 
-- We want to see all the pokemon on the page by default.
-- We can search by name every pokemon and you must show every pokemon matched with the searched string.
-- Threshold Power field: When you put a value (pokemon power), you must update the count value and count every pokemon with the power threshold. Example: if you put 319, you must return every pokemon with power strictly above 319.
-- Count: must show the current count of pokemon returned by your search input and/or power threshold.
-- Min: you must return the minium pokemon power of the list. It must be worked with search
-- Max: you must return the maximum pokemon power of the list. It must be worked with search
-  Example : [Search part](with-search.png) [Power threshold part](with-threshold.png).
+3. **Utilisation de `useSearchParams` dans les versions plus récentes de Next.js**
+   - Si j'avais utilisé une version plus récente de Next.js, j'aurais préféré gérer les paramètres de recherche avec `useSearchParams` plutôt qu'un `state` pour manipuler les paramètres dans l'URL de manière plus fluide et naturelle.
 
-#### Pokemon view
+4. **Gestion des ID minimum et maximum**
+   - Actuellement, les valeurs utilisées pour ne pas afficher les boutons "Previous" et "Next" en fonction du premier et du dernier ID sont définies en dur. J'aurais pu calculer dynamiquement les valeurs `minId` et `maxId` en récupérant l'ID minimum et maximum directement depuis la liste des Pokémon ou via une requête spécifique, plutôt que de les coder manuellement.
 
-- When you click on a row (pokemon in table), you must show this pokemon in a new page (Page pokemon ex: /pokemon/2344). You must show in this page, all properties of pokemon and this image (available in public/images folder). 
-A next button and a previous button must be display to access on previous or next pokemon (based on id logic).
+5. **Chemins d'images cassés en raison des caractères spéciaux**
+   - Certaines images ne se chargent pas correctement à cause de caractères spéciaux dans les noms des Pokémon (par exemple, "Mr. Mime" ou "Nidoran♀"). Je n'ai pas trouvé de solution viable avec des regex ou d'autres techniques pour corriger ce problème de manière systématique. Une approche plus robuste aurait été d'utiliser les IDs des Pokémon pour nommer les images, ce qui permettrait d'éviter les problèmes liés aux caractères spéciaux dans les chemins d'accès.
 
+6. **Tests unitaires**
+   - Étant moins familier avec les tests unitaires, je n'ai probablement pas couvert tous les cas possibles ni implémenté les tests de manière optimale.
 
-#### Unit test
-
-- Make unit test on components, helpers, endpoint, ...
-
-## Getting Started
-
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-[Page list pokemon](http://localhost:3000/) can be accessed on http://localhost:3000/.
-[Page pokemon](http://localhost:3000/pokemon/2344) can be accessed on http://localhost:3000/pokemon/2344.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/pokemons](http://localhost:3000/api/pokemons). This endpoint can be edited in `pages/api/pokemons.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
 #### Install the dependencies
 
@@ -72,3 +58,15 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 ```bash
 @user:~$ npm run test
 ```
+
+
+
+
+
+je n'ai pas réussi à implementer un loading state lors du chargement de l'image pour pokemon page via onLoadComplete(() => setLoading(false)) (la fonction a l'air de se lancée avant que l'image soit visible ce qui fait que le loading state est toujours false)
+
+Ni à implementer suspense c'est pourqioi j'ai remplacé la logique de suspense par le fait d'écouter les changements de route via le router events et retourner le composant de loading
+
+ensuite des version plus récente de nextjs j'aurai utiliser useSearchParam 
+
+j'aurai aussi pu ne pas mettre en dur l'id dans le ternaire et calculer le minid et maxId dans la req

@@ -13,6 +13,10 @@ import {
   Td,
   TypeBadge,
   TypeContainer,
+  FilterContainer,
+  Label,
+  Input,
+  StatsContainer
 } from "../styles/pokemons";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next";
@@ -100,17 +104,17 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
       </Head>
       <h1>Pokemon list</h1>
 
-      <div>
-        <div>Search</div>
-        <input
+      <FilterContainer>
+      <Label>Search:</Label>
+        <Input
           type="text"
           placeholder="Search Pokemon by name"
           name="name"
           value={filters.name}
           onChange={handleInputChange}
         />
-        <div>Power threshold</div>
-        <input
+        <Label>Power threshold:</Label>
+        <Input
           type="number"
           placeholder="search by power greater than"
           name="power"
@@ -118,10 +122,12 @@ const HomePage = ({ pokemons }: { pokemons: Pokemon[] }) => {
           value={filters.power}
           onChange={handleInputChange}
         />
-        <div>Count over threshold: {powerStats.count}</div>
-        <div>Min: {powerStats.min}</div>
-        <div>Max: {powerStats.max}</div>
-      </div>
+        <StatsContainer>
+          <div>Count over threshold: {powerStats.count}</div>
+          <div>Min: {powerStats.min}</div>
+          <div>Max: {powerStats.max}</div>
+        </StatsContainer>
+      </FilterContainer>
       <TableContainer>
         <Table>
           <thead>

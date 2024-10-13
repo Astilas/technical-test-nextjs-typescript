@@ -84,5 +84,26 @@ export const TypeBadge = styled.span<{ pokemonType: string }>`
 export const TypeContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 4px; 
+  gap: 4px;
+`;
+
+export const FilterContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+export const Label = styled.div`
+  font-weight: bold;
+`;
+
+export const Input = styled.input`
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;
+
+export const StatsContainer = styled.div`
+  display: flex;
+  gap: 15px;
 `;

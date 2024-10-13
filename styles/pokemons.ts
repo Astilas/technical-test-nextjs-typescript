@@ -90,21 +90,43 @@ export const TypeContainer = styled.div`
 
 export const FilterContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 `;
 
 export const Label = styled.div`
   font-weight: bold;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 export const Input = styled.input`
-  padding: 10px 10px;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  flex: 1;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 export const StatsContainer = styled.div`
   display: flex;
   gap: 15px;
+  flex-wrap: wrap;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: space-between;
+  }
 `;

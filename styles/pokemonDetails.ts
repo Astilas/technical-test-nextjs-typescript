@@ -117,3 +117,6 @@ export const StyledButton = styled.button`
 export const TitlePokemon = styled.div`
     display: contents;
 `
+export const ImageContainer = styled.div`
+  margin: 30px
+`;
